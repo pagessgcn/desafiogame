@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desafio Triplo: Gestor Sustentável (RSAC)</title>
+    <style>
+        /* CSS Embarcado para Leveza e Simplicidade */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .indicators {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            gap: 15px;
+        }
+        .indicator-bar {
+            width: 30%;
+            text-align: center;
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        .indicator-bar h3 {
+            margin-top: 0;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .bar-container {
+            height: 10px;
+            background: #bdc3c7;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+        .bar {
+            height: 100%;
+            transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out;
+        }
+        .planeta .bar { background-color: #2ecc71; } /* Green */
+        .pessoas .bar { background-color: #3498db; } /* Blue */
+        .lucro .bar { background-color: #f39c12; } /* Orange */
+
+        /* Red for low status */
+        .low-planeta { background-color: #e74c3c !important; }
+        .low-pessoas { background-color: #e74c3c !important; }
+        .low-lucro { background-color: #e74c3c !important; }
+
+        .game-area {
+            border-top: 1px solid #ddd;
+            padding-top: 25px;
+        }
+        .turn-info {
+            text-align: center;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .card-container {
+            border: 2px solid #34495e;
+            border-radius: 10px;
+            padding: 20px;
+            background: #fdfdfd;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        }
+        .card-container h2 {
+            margin-top: 0;
+            color: #34495e;
+        }
+        .option-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+            text-align: left;
+        }
+        .option-button:hover {
+            background-color: #2980b9;
+        }
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #ecf0f1;
+            border-left: 5px solid #3498db;
+        }
+        .feedback p {
+            margin: 5px 0;
+        }
+        .educational-fact {
+            font-style: italic;
+            color: #2c3e50;
+            margin-top: 10px;
+            border-top: 1px dashed #ccc;
+            padding-top: 10px;
+        }
+        .game-over-screen, .win-screen {
+            text-align: center;
+            padding: 50px;
+            background: #e74c3c;
+            color: white;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        .win-screen {
+            background: #27ae60;
+        }
+        .next-turn-button {
+            display: block;
+            width: 50%;
+            margin: 20px auto;
+            padding: 15px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: background-color 0.3s;
+        }
+        .next-turn-button:hover {
+            background-color: #2ecc71;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 Desafio Triplo: Sustentabilidade e Negócios 💰🌍👥</h1>
+        <p style="text-align: center; margin-bottom: 25px; font-weight: 500;">
+            Assuma o papel de Gestor de Sustentabilidade. Seu objetivo é sobreviver por **10 Turnos** mantendo as três barras do **Triple Bottom Line (Pessoas, Planeta, Lucro)** acima de **75%**.
+        </p>
+
+        <div class="indicators">
+            <div class="indicator-bar planeta">
+                <h3>🟢 Planeta (Ambiental)</h3>
+                <div class="bar-container"><div id="planeta-bar" class="bar" style="width: 50%;"></div></div>
+                <p id="planeta-value">50%</p>
+            </div>
+            <div class="indicator-bar pessoas">
+                <h3>🔵 Pessoas (Social)</h3>
+                <div class="bar-container"><div id="pessoas-bar" class="bar" style="width: 50%;"></div></div>
+                <p id="pessoas-value">50%</p>
+            </div>
+            <div class="indicator-bar lucro">
+                <h3>💰 Lucro (Econômico/Governança)</h3>
+                <div class="bar-container"><div id="lucro-bar" class="bar" style="width: 50%;"></div></div>
+                <p id="lucro-value">50%</p>
+            </div>
+        </div>
+        
+        <div id="game-area" class="game-area">
+            <div id="turn-info" class="turn-info">Turno 1 / 10</div>
+            
+            <div id="card-container" class="card-container">
+                <h2>Aguardando Início...</h2>
+                <p style="text-align: center;">Clique em **Começar Jogo** para iniciar o primeiro turno.</p>
+                <button onclick="startGame()" class="next-turn-button">Começar Jogo</button>
+            </div>
+
+            <div id="feedback" class="feedback" style="display:none;"></div>
+        </div>
+
+        <div id="game-over-screen" class="game-over-screen" style="display:none;"></div>
+        <div id="win-screen" class="win-screen" style="display:none;"></div>
+
+    </div>
+
+    <script>
+        // Definição dos Dilemas de RSAC (As Cartas de Decisão)
+        const DILEMAS = [
+            {
+                tema: "Recursos Naturais (Planeta)",
+                pergunta: "A fábrica precisa expandir a produção. Como você lida com os resíduos?",
+                opcoes: [
+                    {
+                        texto: "Investir em Economia Circular, reprojetando processos para zero resíduo. (Alto custo, alto impacto ambiental positivo)",
+                        impacto: { planeta: 18, pessoas: 5, lucro: -15 }, 
+                        fato: "FATO RSAC: **Economia Circular** visa eliminar o desperdício, mantendo recursos em uso (reutilizar, reciclar). É um alto custo inicial, mas garante sustentabilidade e reputação a longo prazo."
+                    },
+                    {
+                        texto: "Comprar créditos de carbono para compensar a poluição gerada pela expansão. (Custo moderado, impacto misto)",
+                        impacto: { planeta: 5, pessoas: 0, lucro: -10 },
+                        fato: "FATO RSAC: A compra de créditos de carbono é uma compensação, mas há risco de **'Greenwashing'** (parecer verde sem realmente ser) se não for acompanhada de redução real de emissões."
+                    },
+                    {
+                        texto: "Aumentar o Descarte Irregular para cortar custos imediatamente e acelerar a produção. (Alto ganho a curto prazo, alto risco)",
+                        impacto: { planeta: -25, pessoas: -10, lucro: 15 },
+                        fato: "FATO RSAC: O descarte irregular polui e gera multas pesadas. Essa estratégia destrói o valor da empresa a longo prazo e a Reputação (Pessoas) com a comunidade."
+                    }
+                ]
+            },
+            {
+                tema: "Fornecimento Ético (Social)",
+                pergunta: "Há rumores de más condições de trabalho no seu principal fornecedor de matéria-prima. O que fazer?",
+                opcoes: [
+                    {
+                        texto: "Contratar uma auditoria independente e pausar o fornecimento até que as condições melhorem. (Alto custo, alto impacto social positivo)",
+                        impacto: { planeta: 0, pessoas: 18, lucro: -15 }, 
+                        fato: "FATO RSAC: A **Ética na Cadeia de Valor** garante que todos os parceiros respeitem os direitos humanos e as leis trabalhistas. Isso fortalece a Reputação e o pilar Pessoas."
+                    },
+                    {
+                        texto: "Manter o fornecedor atual e ignorar os rumores. (Custo zero, mas alto risco de escândalo)",
+                        impacto: { planeta: 0, pessoas: 0, lucro: 0 }, 
+                        fato: "FATO RSAC: A inação pode levar a um escândalo de trabalho. **Stakeholders**, como clientes e a comunidade, exigem transparência e podem gerar boicotes se a situação vier à tona."
+                    },
+                    {
+                        texto: "Mudar para um fornecedor ainda mais barato e não ético, maximizando a margem de lucro. (Lucro a curto prazo, impacto social negativo)",
+                        impacto: { planeta: 0, pessoas: -25, lucro: 10 }, 
+                        fato: "FATO RSAC: Violações éticas na cadeia de valor destroem o pilar 'Pessoas', causando boicotes e queda de vendas. A RSAC exige a proteção dos direitos humanos em toda a operação."
+                    }
+                ]
+            },
+            {
+                tema: "Governança/Ética (Lucro/Pessoas)",
+                pergunta: "A auditoria interna identificou uma falha de compliance que pode reduzir o lucro do trimestre se for divulgada.",
+                opcoes: [
+                    {
+                        texto: "Contratar uma auditoria independente para máxima transparência e corrigir a falha publicamente. (Alto custo, alto impacto em Governança)",
+                        impacto: { planeta: 0, pessoas: 5, lucro: 18 }, 
+                        fato: "FATO RSAC: Alta **Governança** (o 'G' de **ESG**) e o **Compliance** aumentam a confiança dos investidores e a credibilidade da empresa a longo prazo, mesmo com custos iniciais."
+                    },
+                    {
+                        texto: "Fazer apenas uma autoavaliação interna e não divulgar o problema publicamente. (Custo baixo, risco moderado)",
+                        impacto: { planeta: 0, pessoas: 0, lucro: 5 }, 
+                        fato: "FATO RSAC: A transparência é a chave da Governança. Ocultar informações gera risco de falha de compliance e pode levar a processos legais e multas enormes."
+                    },
+                    {
+                        texto: "Ocultar o resultado negativo e ajustar os relatórios para manter o lucro alto. (Lucro imediato, risco catastrófico)",
+                        impacto: { planeta: 0, pessoas: -15, lucro: -25 }, 
+                        fato: "FATO RSAC: Ocultar resultados é fraude. A exposição desta prática leva à queda do Lucro (por processos e perda de confiança) e da Reputação (Pessoas), podendo levar a prisão."
+                    }
+                ]
+            },
+            {
+                tema: "Comunidade (Social)",
+                pergunta: "Você deve destinar o orçamento social. A comunidade local está pedindo apoio para projetos de educação e saúde.",
+                opcoes: [
+                    {
+                        texto: "Apoiar 2 projetos sociais locais de longo prazo (Investimento Social). (Alto custo, alto impacto social)",
+                        impacto: { planeta: 0, pessoas: 18, lucro: -15 }, 
+                        fato: "FATO RSAC: O **Investimento Social** foca em impacto mensurável e de longo prazo, alinhando a empresa aos **ODS (Objetivos de Desenvolvimento Sustentável)**. Isso gera lealdade do consumidor."
+                    },
+                    {
+                        texto: "Doar 100 cestas básicas imediatamente (Filantropia). (Custo moderado, impacto social imediato)",
+                        impacto: { planeta: 0, pessoas: 5, lucro: -10 }, 
+                        fato: "FATO RSAC: A **Filantropia** é importante para necessidades imediatas, mas o **Investimento Social** gera um impacto mais profundo e duradouro, resolvendo problemas estruturais."
+                    },
+                    {
+                        texto: "Ignorar os pedidos da comunidade e aplicar o dinheiro em um novo projeto de marketing da empresa. (Lucro imediato, impacto social negativo)",
+                        impacto: { planeta: 0, pessoas: -25, lucro: 15 }, 
+                        fato: "FATO RSAC: Ignorar os Stakeholders (comunidade) gera imagem negativa e risco de vandalismo/protesto, minando a licença social para operar da empresa."
+                    }
+                ]
+            }
+        ];
+
+        // Definição de Eventos Aleatórios (Feedback da Comunidade)
+        const EVENTOS_ALEATORIOS = {
+            planetaBaixo: [
+                { texto: "🚨 **EVENTO: Crise Ambiental!** Notícias sobre poluição hídrica na área da fábrica. A reputação cai e há custos de remediação. (-10 Lucro, -10 Pessoas).", impacto: { lucro: -10, pessoas: -10, planeta: 0 } },
+                { texto: "⚠️ **EVENTO: Multa Ambiental Pesada!** O governo impõe uma multa por má gestão de resíduos. (-15 Lucro).", impacto: { lucro: -15, pessoas: 0, planeta: 0 } },
+            ],
+            pessoasBaixo: [
+                { texto: "📢 **EVENTO: Greve Geral!** Funcionários param a produção devido às más condições de trabalho. (-15 Lucro, -5 Pessoas).", impacto: { lucro: -15, pessoas: -5, planeta: 0 } },
+                { texto: "😠 **EVENTO: Protesto da Comunidade!** Moradores protestam contra a empresa. A reputação e confiança caem. (-15 Pessoas).", impacto: { lucro: 0, pessoas: -15, planeta: 0 } },
+            ],
+            lucroBaixo: [
+                { texto: "📉 **EVENTO: Queda no Investimento!** Acionistas preocupados com a transparência e desempenho reduzem o capital investido. (-10 Lucro).", impacto: { lucro: -10, pessoas: 0, planeta: 0 } },
+                { texto: "❌ **EVENTO: Dificuldade de Empréstimo!** Bancos negam crédito devido ao baixo desempenho financeiro. (-5 Lucro).", impacto: { lucro: -5, pessoas: 0, planeta: 0 } },
+            ],
+            todosAltos: [
+                { texto: "🏆 **EVENTO: Prêmio de Sustentabilidade!** Cobertura de mídia positiva e bônus nas vendas. (+10 Lucro, +5 Pessoas, +5 Planeta).", impacto: { lucro: 10, pessoas: 5, planeta: 5 } },
+                { texto: "🤝 **EVENTO: Lealdade do Consumidor!** A reputação exemplar impulsiona as vendas e o Lucro. (+15 Lucro).", impacto: { lucro: 15, pessoas: 0, planeta: 0 } },
+            ]
+        };
+
+        // Estado Inicial do Jogo
+        let status = {
+            planeta: 50,
+            pessoas: 50,
+            lucro: 50,
+            turno: 1,
+            vitoria: 10,
+            minimoParaVencer: 75,
+            gameActive: false
+        };
+
+        // Referências aos Elementos da Interface
+        const elements = {
+            planetaBar: document.getElementById('planeta-bar'),
+            pessoasBar: document.getElementById('pessoas-bar'),
+            lucroBar: document.getElementById('lucro-bar'),
+            planetaValue: document.getElementById('planeta-value'),
+            pessoasValue: document.getElementById('pessoas-value'),
+            lucroValue: document.getElementById('lucro-value'),
+            turnInfo: document.getElementById('turn-info'),
+            cardContainer: document.getElementById('card-container'),
+            feedbackDiv: document.getElementById('feedback'),
+            gameOverScreen: document.getElementById('game-over-screen'),
+            winScreen: document.getElementById('win-screen'),
+            gameArea: document.getElementById('game-area')
+        };
+
+        // --- Funções de Lógica do Jogo ---
+
+        function updateUI() {
+            // Atualiza o visual das barras de status
+            ['planeta', 'pessoas', 'lucro'].forEach(key => {
+                const value = Math.max(0, Math.min(100, status[key]));
+                const barElement = elements[`${key}Bar`];
+                const valueElement = elements[`${key}Value`];
+                
+                barElement.style.width = `${value}%`;
+                valueElement.textContent = `${value.toFixed(0)}%`;
+
+                // Aplica cor vermelha se a barra estiver baixa
+                const barContainer = barElement.parentElement.parentElement;
+                if (value < 25) {
+                    barElement.classList.add(`low-${key}`);
+                    barContainer.style.borderColor = '#e74c3c';
+                } else {
+                    barElement.classList.remove(`low-${key}`);
+                    barContainer.style.borderColor = '';
+                }
+            });
+
+            elements.turnInfo.textContent = `Turno ${status.turno} / ${status.vitoria}`;
+        }
+
+        function clamp(value) {
+            // Garante que os valores fiquem entre 0 e 100
+            return Math.max(0, Math.min(100, value));
+        }
+
+        function applyImpact(impact) {
+            // Aplica os impactos das decisões/eventos
+            status.planeta = clamp(status.planeta + (impact.planeta || 0));
+            status.pessoas = clamp(status.pessoas + (impact.pessoas || 0));
+            status.lucro = clamp(status.lucro + (impact.lucro || 0));
+        }
+
+        function generateRandomEvent() {
+            let eventText = "Tudo calmo. Nenhum evento aleatório neste turno.";
+            let eventImpact = null;
+            let eventType = null;
+
+            // Define chance de eventos ruins (maior se o status estiver baixo)
+            if (status.planeta < 40 && Math.random() < 0.4) eventType = 'planetaBaixo';
+            else if (status.pessoas < 40 && Math.random() < 0.4) eventType = 'pessoasBaixo';
+            else if (status.lucro < 40 && Math.random() < 0.4) eventType = 'lucroBaixo';
+
+            // Define chance de eventos bons (se todos os status estiverem altos)
+            else if (status.planeta > 75 && status.pessoas > 75 && status.lucro > 75 && Math.random() < 0.3) eventType = 'todosAltos';
+
+            if (eventType) {
+                const events = EVENTOS_ALEATORIOS[eventType];
+                const event = events[Math.floor(Math.random() * events.length)];
+                eventText = event.texto;
+                eventImpact = event.impacto;
+                applyImpact(eventImpact);
+            }
+            
+            return eventText;
+        }
+
+        function checkGameOver() {
+            // Regra de Falha: Se qualquer barra cair a zero
+            if (status.planeta <= 0 || status.pessoas <= 0 || status.lucro <= 0) {
+                status.gameActive = false;
+                elements.gameArea.style.display = 'none';
+                elements.gameOverScreen.style.display = 'block';
+
+                let reason = "";
+                if (status.planeta <= 0) reason = "Crise Ambiental: A poluição é insustentável. A empresa perdeu sua licença ambiental (Planeta=0%).";
+                else if (status.pessoas <= 0) reason = "Crise Social: Greve geral e protestos violentos. A Reputação Social da empresa foi destruída (Pessoas=0%).";
+                else if (status.lucro <= 0) reason = "Crise Econômica/Governança: Falência. A falta de transparência e os custos de curto prazo levaram ao colapso (Lucro=0%).";
+
+                elements.gameOverScreen.innerHTML = `
+                    <h2>🚫 FIM DE JOGO - FALHA NO TRIPÉ DA SUSTENTABILIDADE</h2>
+                    <p style="font-size: 1.2em; font-weight: bold;">${reason}</p>
+                    <p>Você não conseguiu equilibrar o **Triple Bottom Line**.</p>
+                    <p>Tente novamente para provar que a RSAC é um modelo de sucesso!</p>
+                    <button onclick="window.location.reload()" class="next-turn-button" style="background-color: #f1c40f; color: #333;">Recomeçar</button>
+                `;
+                return true;
+            }
+            return false;
+        }
+
+        function checkWin() {
+            // Condição de Vitória: Sobreviver 10 Turnos com todas as barras acima de 75%
+            if (status.turno > status.vitoria) {
+                if (status.planeta >= status.minimoParaVencer && status.pessoas >= status.minimoParaVencer && status.lucro >= status.minimoParaVencer) {
+                    status.gameActive = false;
+                    elements.gameArea.style.display = 'none';
+                    elements.winScreen.style.display = 'block';
+                    elements.winScreen.innerHTML = `
+                        <h2>🥳 VITÓRIA! - GESTOR SUSTENTÁVEL!</h2>
+                        <p style="font-size: 1.5em; font-weight: bold;">Você sobreviveu por ${status.vitoria} Turnos com excelência!</p>
+                        <p>Parabéns! Você provou que é possível prosperar (**Lucro: ${status.lucro.toFixed(0)}%**) ao mesmo tempo em que cuida das **Pessoas** (**${status.pessoas.toFixed(0)}%**) e do **Planeta** (**${status.planeta.toFixed(0)}%**).</p>
+                        <p>A **Responsabilidade Social/Ambiental Corporativa (RSAC)** é o caminho para um negócio de sucesso no futuro.</p>
+                        <button onclick="window.location.reload()" class="next-turn-button">Jogar Novamente</button>
+                    `;
+                } else {
+                    status.gameActive = false;
+                    elements.gameArea.style.display = 'none';
+                    elements.gameOverScreen.style.display = 'block';
+                    elements.gameOverScreen.style.backgroundColor = '#d35400';
+                    elements.gameOverScreen.innerHTML = `
+                        <h2>⚠️ JOGO CONCLUÍDO - META NÃO ATINGIDA</h2>
+                        <p style="font-size: 1.2em; font-weight: bold;">Você sobreviveu, mas não alcançou a meta de ${status.minimoParaVencer}% em todos os pilares.</p>
+                        <p>O equilíbrio é essencial: o sucesso sustentável exige altos níveis nos 3 pilares da RSAC. Mantenha o foco!</p>
+                        <button onclick="window.location.reload()" class="next-turn-button" style="background-color: #f1c40f; color: #333;">Recomeçar</button>
+                    `;
+                }
+                return true;
+            }
+            return false;
+        }
+
+        function startTurn() {
+            if (!status.gameActive) return;
+
+            elements.cardContainer.innerHTML = '';
+            elements.feedbackDiv.style.display = 'none';
+            elements.feedbackDiv.innerHTML = '';
+
+            if (checkWin()) return;
+
+            // Seleciona um dilema aleatório para o turno
+            const currentDilemma = DILEMAS[Math.floor(Math.random() * DILEMAS.length)];
+
+            let cardHTML = `
+                <h2>🃏 Dilema do Turno ${status.turno}: ${currentDilemma.tema}</h2>
+                <p style="font-weight: bold; font-size: 1.1em;">${currentDilemma.pergunta}</p>
+                <p>Escolha uma opção:</p>
+            `;
+
+            // Renderiza as opções como botões
+            currentDilemma.opcoes.forEach((option, index) => {
+                // Passa o turno atual e o índice da opção para a função handleDecision
+                cardHTML += `
+                    <button class="option-button" onclick="handleDecision(${status.turno}, ${index})">
+                        ${option.texto}
+                    </button>
+                `;
+            });
+
+            elements.cardContainer.innerHTML = cardHTML;
+            updateUI();
+        }
+
+        function handleDecision(turno, optionIndex) {
+            // Impede cliques múltiplos ou de turnos passados
+            if (turno !== status.turno || !status.gameActive) return;
+
+            // Busca o dilema correto na estrutura de dados
+            const dilemmaElement = elements.cardContainer.querySelector('h2');
+            const currentTheme = dilemmaElement.textContent.replace(`🃏 Dilema do Turno ${status.turno}: `, '');
+            const chosenDilemma = DILEMAS.find(d => d.tema === currentTheme);
+
+            if (!chosenDilemma) return; 
+
+            const decision = chosenDilemma.opcoes[optionIndex];
+            
+            // 1. Aplica o impacto da decisão
+            applyImpact(decision.impacto);
+
+            // 2. Gera e aplica o evento aleatório (feedback)
+            const eventText = generateRandomEvent();
+            
+            // 3. Verifica Game Over
+            if (checkGameOver()) {
+                updateUI();
+                return;
+            }
+
+            // 4. Exibe o Feedback
+            elements.feedbackDiv.style.display = 'block';
+            let feedbackHTML = `
+                <h3>✅ Decisão Tomada (Turno ${status.turno})</h3>
+                <p>Você escolheu: **${decision.texto}**</p>
+                <div class="educational-fact">
+                    <strong>Conteúdo Educacional:</strong> ${decision.fato}
+                </div>
+                <h3>📢 Feedback da Comunidade/Eventos</h3>
+                <p>${eventText}</p>
+                <p style="font-weight: bold;">Seu Status Após o Turno ${status.turno}:</p>
+                <ul>
+                    <li>🟢 Planeta: ${status.planeta.toFixed(0)}%</li>
+                    <li>🔵 Pessoas: ${status.pessoas.toFixed(0)}%</li>
+                    <li>💰 Lucro: ${status.lucro.toFixed(0)}%</li>
+                </ul>
+            `;
+            elements.feedbackDiv.innerHTML = feedbackHTML;
+
+            // 5. Prepara para o próximo turno
+            status.turno++;
+            
+            elements.cardContainer.innerHTML = `
+                <h2>Próximo Passo</h2>
+                <p style="text-align: center;">O **Ano Fiscal** (Turno ${status.turno - 1}) terminou. Clique abaixo para iniciar o próximo ciclo.</p>
+                <button onclick="startTurn()" class="next-turn-button">Avançar para Turno ${status.turno}</button>
+            `;
+            
+            updateUI();
+        }
+
+        function startGame() {
+            status.gameActive = true;
+            status.planeta = 50;
+            status.pessoas = 50;
+            status.lucro = 50;
+            status.turno = 1;
+            elements.gameOverScreen.style.display = 'none';
+            elements.winScreen.style.display = 'none';
+            elements.gameArea.style.display = 'block';
+            startTurn();
+        }
+
+        // Inicializa a UI ao carregar a página
+        updateUI();
+    </script>
+</body>
+</html>
