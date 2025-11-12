@@ -484,34 +484,6 @@
             }
         ];
 
-        // Definição dos Eventos Aleatórios
-        const EVENTOS_ALEATORIOS = {
-            // Eventos negativos (Gatilho: Indicador <= 50)
-            negativos: {
-                planeta: [
-                    { desc: "Notícias sobre poluição hídrica.", impacto: { planeta: -10, pessoas: -5, lucro: -15 } },
-                    { desc: "Aumento nos custos de tratamento de água.", impacto: { planeta: -5, pessoas: 0, lucro: -10 } },
-                    { desc: "Multa ambiental pesada.", impacto: { planeta: -15, pessoas: 0, lucro: -20 } }
-                ],
-                pessoas: [
-                    { desc: "Greve dos funcionários (-produtividade).", impacto: { planeta: 0, pessoas: -15, lucro: -15 } },
-                    { desc: "Protesto da comunidade (+custo de segurança).", impacto: { planeta: -5, pessoas: -10, lucro: -10 } },
-                    { desc: "Queda acentuada na reputação.", impacto: { planeta: 0, pessoas: -20, lucro: -5 } }
-                ],
-                lucro: [
-                    { desc: "Redução do investimento por parte dos acionistas.", impacto: { planeta: -5, pessoas: -5, lucro: -20 } },
-                    { desc: "Dificuldade em obter empréstimos.", impacto: { planeta: 0, pessoas: 0, lucro: -15 } }
-                ]
-            },
-            // Evento positivo (Gatilho: Todos os Indicadores > 90)
-            positivo: [
-                { desc: "Prêmio de Sustentabilidade (Bônus Lucro).", impacto: { planeta: 5, pessoas: 5, lucro: 15 } },
-                { desc: "Aumento da lealdade do consumidor (+Vendas).", impacto: { planeta: 5, pessoas: 10, lucro: 10 } },
-                { desc: "Cobertura de mídia positiva.", impacto: { planeta: 10, pessoas: 10, lucro: 5 } }
-            ]
-        };
-
-
         // VARIÁVEIS DE ESTADO
         let gameState = {
             planeta: 100,
@@ -677,4 +649,87 @@
 
             currentDilemma = getNextDilemma();
             if (!currentDilemma) {
-                // Caso não haja mais dile
+                // Caso não haja mais dilemas únicos e o jogo não chegou ao fim
+                showWinScreen("Parabéns! Você fez escolhas sustentáveis em todos os dilemas disponíveis.");
+                return;
+            }
+            
+            // Atualiza informações de turno
+            turnInfoEl.textContent = `Turno ${gameState.currentTurn} / ${gameState.totalTurns}`;
+
+            // Renderiza o novo card de dilema
+            renderDilemma(currentDilemma);
+            feedbackEl.style.display = 'none'; // Oculta o feedback do turno anterior
+        }
+
+        /**
+         * Renderiza o dilema atual na tela.
+         * @param {Object} dilemma O objeto do dilema a ser exibido.
+         */
+        function renderDilemma(dilemma) {
+            let htmlContent = `
+                <h2>${dilemma.tema}</h2>
+                <p class="question-text">${dilemma.pergunta}</p>
+            `;
+            
+            dilemma.opcoes.forEach((opcao, index) => {
+                htmlContent += `<button class="option-button" onclick="handleChoice(${index})">${opcao.texto}</button>`;
+            });
+
+            cardContainerEl.innerHTML = htmlContent;
+        }
+
+
+        /**
+         * Trata a escolha do usuário, aplicando o impacto e mostrando feedback.
+         * @param {number} choiceIndex Índice da opção escolhida (0, 1 ou 2).
+         */
+        function handleChoice(choiceIndex) {
+            const choice = currentDilemma.opcoes[choiceIndex];
+            const impacto = choice.impacto;
+            
+            // Aplica os impactos ao estado do jogo
+            gameState.planeta += impacto.planeta;
+            gameState.pessoas += impacto.pessoas;
+            gameState.lucro += impacto.lucro;
+
+            // Mostra o feedback
+            showFeedback(choice.fato, impacto);
+            
+            // Atualiza visualmente o jogo
+            updateBars();
+            
+            // Renderiza o botão de Próximo Turno
+            cardContainerEl.innerHTML = `
+                <h2>Decisão Tomada!</h2>
+                <p>O impacto de sua escolha foi aplicado nas barras. Veja o resultado:</p>
+                <button onclick="nextTurn()" class="next-turn-button">Próximo Turno</button>
+            `;
+        }
+
+        /**
+         * Exibe a tela de feedback após a escolha.
+         * @param {string} fato Fato educativo sobre a decisão.
+         * @param {Object} impacto O objeto de impacto (planeta, pessoas, lucro).
+         */
+        function showFeedback(fato, impacto) {
+            const getImpactText = (value, name) => {
+                const color = value > 0 ? '#27ae60' : (value < 0 ? '#e74c3c' : '#34495e');
+                const sign = value >= 0 ? '+' : '';
+                return `<span style="color:${color}; font-weight: bold;">${sign}${value}% em ${name}</span>`;
+            };
+
+            const feedbackHTML = `
+                <p><strong>Impacto da Decisão:</strong></p>
+                <p>${getImpactText(impacto.planeta, 'Planeta')}, 
+                   ${getImpactText(impacto.pessoas, 'Pessoas')}, 
+                   ${getImpactText(impacto.lucro, 'Lucro')}</p>
+                <p class="educational-fact">${fato}</p>
+            `;
+
+            feedbackEl.innerHTML = feedbackHTML;
+            feedbackEl.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
