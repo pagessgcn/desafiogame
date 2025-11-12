@@ -1,550 +1,197 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RSAC: Responsabilidade Social Ambiental Corporativa</title>    
-    <style>
-        /* CSS Geral da Página */
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f7f6;
-            color: #333;
-            margin: 0;
-            padding: 15px; /* Padding reduzido */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-size: 0.9em; /* Fonte base um pouco menor */
-        }
-
-        /* ESTILO DO CABEÇALHO SUPERIOR (RSAC) */
-        .header-rsac {
-            text-align: left;
-            margin-bottom: 20px;
-            padding: 10px 0;
-            width: 100%;
-            max-width: 900px;
-            color: #494F79;
-        }
-        .header-rsac h1 {
-            color: #3C3E9D;
-            margin-bottom: 3px;
-            font-size: 2em; /* Reduzido de 2.5em para 2em */
-            text-align: left;
-        }
-        .header-rsac p {
-            color: #666;
-            font-size: 0.8em; /* Reduzido de 0.9em para 0.8em */
-            margin: 0;
-            text-align: left;
-        }
-        .header-rsac .bold {
-            font-weight: bold;
-        }
-        /* FIM DO ESTILO DO CABEÇALHO */
-
-        .container {
-            max-width: 900px;
-            width: 100%;
-            background: #fff;
-            padding: 20px; /* Padding reduzido */
-            border-radius: 10px; /* Borda reduzida */
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-        
-        .container > h1 { /* Para o h1 DENTRO do container (Título do Jogo) */
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 1.6em; /* Reduzido de 2em para 1.6em */
-        }
-        .container > p { /* Para o parágrafo do objetivo do jogo */
-            text-align: center; 
-            margin-bottom: 20px; 
-            font-weight: 500;
-            font-size: 0.9em; /* Reduzido de 500 para 0.9em */
-        }
-
-        .indicators {
-            display: flex;
-            justify-content: space-around;
-            margin-bottom: 25px;
-            gap: 10px; /* Espaçamento reduzido */
-        }
-        .indicator-bar {
-            width: 30%;
-            text-align: center;
-            background: #ecf0f1;
-            padding: 10px; /* Padding reduzido */
-            border-radius: 6px; /* Borda reduzida */
-            font-size: 0.8em; /* Fonte interna da barra reduzida */
-        }
-        .indicator-bar h3 {
-            margin-top: 0;
-            font-size: 1em; /* Reduzido de 1.1em para 1em */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .bar-container {
-            height: 8px; /* Altura da barra reduzida */
-            background: #bdc3c7;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 5px;
-        }
-        .bar {
-            height: 100%;
-            transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out;
-        }
-        .planeta .bar { background-color: #2ecc71; }
-        .pessoas .bar { background-color: #3498db; }
-        .lucro .bar { background-color: #f39c12; }
-
-        /* Red for low status */
-        .low-planeta { background-color: #e74c3c !important; }
-        .low-pessoas { background-color: #e74c3c !important; }
-        .low-lucro { background-color: #e74c3c !important; }
-
-        .game-area {
-            border-top: 1px solid #ddd;
-            padding-top: 20px; /* Padding reduzido */
-        }
-        .turn-info {
-            text-align: center;
-            font-size: 1.1em; /* Reduzido de 1.2em para 1.1em */
-            margin-bottom: 15px; /* Margem reduzida */
-            font-weight: bold;
-        }
-        .card-container {
-            border: 2px solid #34495e;
-            border-radius: 8px; /* Borda reduzida */
-            padding: 15px; /* Padding reduzido */
-            background: #fdfdfd;
-            font-size: 0.9em; /* Fonte base do card reduzida */
-        }
-        .card-container h2 {
-            margin-top: 0;
-            color: #34495e;
-            font-size: 1.3em; /* Reduzido de 1.5em para 1.3em (título do dilema) */
-        }
-        .option-button {
-            display: block;
-            width: 100%;
-            padding: 10px; /* Padding reduzido */
-            margin: 8px 0; /* Margem reduzida */
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.9em; /* Fonte do botão reduzida */
-            transition: background-color 0.3s;
-            text-align: left;
-        }
-        .option-button:hover {
-            background-color: #2980b9;
-        }
-        .feedback {
-            margin-top: 15px; /* Margem reduzida */
-            padding: 12px; /* Padding reduzido */
-            border-radius: 4px;
-            background-color: #ecf0f1;
-            border-left: 4px solid #3498db; /* Borda reduzida */
-            font-size: 0.85em; /* Fonte do feedback reduzida */
-        }
-        .feedback p {
-            margin: 4px 0; /* Margem reduzida */
-        }
-        .educational-fact {
-            font-style: italic;
-            color: #2c3e50;
-            margin-top: 8px; /* Margem reduzida */
-            border-top: 1px dashed #ccc;
-            padding-top: 8px; /* Padding reduzido */
-        }
-        .game-over-screen, .win-screen {
-            text-align: center;
-            padding: 30px; /* Padding reduzido */
-            background: #e74c3c;
-            color: white;
-            border-radius: 8px;
-            margin-top: 15px;
-            font-size: 1.1em; /* Fonte reduzida */
-        }
-        .win-screen {
-            background: #27ae60;
-        }
-        .next-turn-button {
-            display: block;
-            width: 60%; /* Largura ligeiramente aumentada para compensar fonte menor */
-            margin: 15px auto; /* Margem reduzida */
-            padding: 12px; /* Padding reduzido */
-            background-color: #27ae60;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1em; /* Fonte reduzida */
-            transition: background-color 0.3s;
-        }
-        .next-turn-button:hover {
-            background-color: #2ecc71;
-        }
-    </style>
-</head>
-<body>
-    
-    <div class="header-rsac">
-        <h1>RSAC: Responsabilidade Social Ambiental Corporativa</h1>
-        <p>Desenvolvido por <span class="bold">S. Silva</span> e Monitorado: <span class="bold">Renata Lange Silva</span>, <span class="bold">Francyne Penteado Colombo</span> e <span class="bold">Isabella Fiorini Ferraz</span></p>
-    </div>
-    
-    <div class="container">
-        <h1>🎮 Desafio Triplo: Sustentabilidade e Negócios 💰🌍👥</h1>
-        <p style="text-align: center; margin-bottom: 20px; font-weight: 500;">
-            Assuma o papel de Gestor de Sustentabilidade. Seu objetivo é sobreviver por <span class="bold">10 Turnos</span> mantendo as três barras do <span class="bold">Triple Bottom Line (Pessoas, Planeta, Lucro)</span> acima de <span class="bold">75%</span>.
-        </p>
-
-        <div class="indicators">
-            <div class="indicator-bar planeta">
-                <h3>🟢 Planeta (Ambiental)</h3>
-                <div class="bar-container"><div id="planeta-bar" class="bar" style="width: 100%;"></div></div>
-                <p id="planeta-value">100%</p>
-            </div>
-            <div class="indicator-bar pessoas">
-                <h3>🔵 Pessoas (Social)</h3>
-                <div class="bar-container"><div id="pessoas-bar" class="bar" style="width: 100%;"></div></div>
-                <p id="pessoas-value">100%</p>
-            </div>
-            <div class="indicator-bar lucro">
-                <h3>💰 Lucro (Econômico/Governança)</h3>
-                <div class="bar-container"><div id="lucro-bar" class="bar" style="width: 100%;"></div></div>
-                <p id="lucro-value">100%</p>
-            </div>
-        </div>
-        
-        <div id="game-area" class="game-area">
-            <div id="turn-info" class="turn-info">Turno 1 / 10</div>
-            
-            <div id="card-container" class="card-container">
-                <h2>Aguardando Início...</h2>
-                <p style="text-align: center;">Clique em <span class="bold">Começar Jogo</span> para iniciar o primeiro turno.</p>
-                <button onclick="startGame()" class="next-turn-button">Começar Jogo</button>
-            </div>
-
-            <div id="feedback" class="feedback" style="display:none;"></div>
-        </div>
-
-        <div id="game-over-screen" class="game-over-screen" style="display:none;"></div>
-        <div id="win-screen" class="win-screen" style="display:none;"></div>
-
-    </div>
-
-    <script>
-        // Definição dos Dilemas de RSAC (As Cartas de Decisão)
-        const DILEMAS = [
-            {
-                tema: "1. Resíduos e Custos (Planeta/Lucro)",
-                pergunta: "Sua empresa precisa reduzir custos para manter a competitividade. Qual decisão você toma em relação ao descarte de resíduos industriais?",
-                opcoes: [
-                    {
-                        texto: "Opção A (RSAC Positiva): Investir em Economia Circular (reciclagem e separação), absorvendo o custo inicial.",
-                        impacto: { planeta: 15, pessoas: 5, lucro: -12 }, 
-                        fato: "FATO RSAC: <span class='bold'>Economia Circular</span> (Opção A) é o melhor a longo prazo, mas exige investimento inicial. O custo de descarte irregular (Opção C) sempre volta como multa ou crise de reputação."
-                    },
-                    {
-                        texto: "Opção B (Neutro): Manter o descarte atual em aterro sanitário.",
-                        impacto: { planeta: -5, pessoas: 0, lucro: 5 },
-                        fato: "FATO RSAC: Aterros são uma solução temporária e não sustentável. Não resolve o problema e pode gerar custos futuros com taxas ambientais."
-                    },
-                    {
-                        texto: "Opção C (RSAC Negativa): Usar um serviço de descarte irregular, porém mais barato, para cortar custos.",
-                        impacto: { planeta: -20, pessoas: -10, lucro: 15 },
-                        fato: "FATO RSAC: Descarte irregular é crime ambiental, destrói o pilar Planeta e, se descoberto, causa falência e prisão."
-                    }
-                ]
-            },
-            {
-                tema: "2. Salário e Moral (Pessoas/Lucro)",
-                pergunta: "A empresa teve lucro inesperado. Acionistas pedem dividendo máximo, mas funcionários clamam por melhores salários e benefícios.",
-                opcoes: [
-                    {
-                        texto: "Opção A (RSAC Positiva): Distribuir bônus e investir em formação profissional para todos.",
-                        impacto: { planeta: 0, pessoas: 18, lucro: -15 }, 
-                        fato: "FATO RSAC: <span class='bold'>Capital Humano</span> é o ativo mais importante. A satisfação e a formação dos funcionários (Opção A) aumentam a produtividade e a retenção, superando o custo a longo prazo."
-                    },
-                    {
-                        texto: "Opção B (Misto): Aumentar o dividendo, mas dar um aumento mínimo apenas para a gestão.",
-                        impacto: { planeta: 0, pessoas: -5, lucro: 10 }, 
-                        fato: "FATO RSAC: Desigualdade interna gera desmotivação, queda na produtividade e perda de talentos. Lucros não compartilhados afetam o pilar Pessoas."
-                    },
-                    {
-                        texto: "Opção C (RSAC Negativa): Maximizar o dividendo para acionistas e cortar o orçamento de benefícios.",
-                        impacto: { planeta: 0, pessoas: -25, lucro: 15 }, 
-                        fato: "FATO RSAC: Ignorar o pilar Pessoas (Opção C) leva a greves, queda abrupta da moral e perda maciça de talentos, afetando a qualidade e, logo, o Lucro."
-                    }
-                ]
-            },
-            {
-                tema: "3. Ética e Fornecedores (Pessoas/Planeta)",
-                pergunta: "Uma ONG denuncia que um fornecedor vital usa mão de obra questionável e polui rios. Você precisa de matéria-prima urgentemente.",
-                opcoes: [
-                    {
-                        texto: "Opção A (RSAC Positiva): Mudar imediatamente para um fornecedor certificado, mesmo que custe mais caro.",
-                        impacto: { planeta: 10, pessoas: 15, lucro: -12 }, 
-                        fato: "FATO RSAC: A <span class='bold'>Ética na Cadeia de Valor</span> (Opção A) é crucial. A empresa é corresponsável pelas ações de seus fornecedores. A mudança elimina o risco de escândalo."
-                    },
-                    {
-                        texto: "Opção B (Neutro): Emitir uma nota negando e prometer uma auditoria interna lenta.",
-                        impacto: { planeta: -5, pessoas: -5, lucro: 0 }, 
-                        fato: "FATO RSAC: Prometer e não agir (Opção B) é considerado <span class='bold'>Greenwashing</span> ou <span class='bold'>Socialwashing</span>. Atrasar a solução mantém o risco e afeta a credibilidade da marca."
-                    },
-                    {
-                        texto: "Opção C (RSAC Negativa): Ignorar o relatório e fechar o pedido de matéria-prima, garantindo o lucro imediato.",
-                        impacto: { planeta: -15, pessoas: -20, lucro: 10 }, 
-                        fato: "FATO RSAC: Ocultar ou ignorar violações éticas (Opção C) pode destruir a reputação da empresa, levar a boicotes e processos judiciais."
-                    }
-                ]
-            },
-            {
-                tema: "4. Transição Energética (Planeta/Lucro)",
-                pergunta: "Para reduzir sua Pegada de Carbono, você deve instalar painéis solares (investimento de 8% do lucro) ou continuar comprando energia da rede, que é mais barata e suja.",
-                opcoes: [
-                    {
-                        texto: "Opção A (RSAC Positiva): Instalar painéis solares, bancando o custo inicial.",
-                        impacto: { planeta: 18, pessoas: 0, lucro: -10 }, 
-                        fato: "FATO RSAC: A <span class='bold'>Transição Energética</span> (Opção A) é um investimento de longo prazo. O custo inicial é alto, mas reduz a pegada de carbono e os custos operacionais futuros."
-                    },
-                    {
-                        texto: "Opção B (Misto): Comprar créditos de carbono no mercado internacional.",
-                        impacto: { planeta: 5, pessoas: 0, lucro: -5 }, 
-                        fato: "FATO RSAC: Créditos de carbono (Opção B) compensam as emissões, mas não as reduzem. É uma solução mais fraca que a descarbonização direta."
-                    },
-                    {
-                        texto: "Opção C (RSAC Negativa): Continuar usando energia barata e suja.",
-                        impacto: { planeta: -15, pessoas: 0, lucro: 10 }, 
-                        fato: "FATO RSAC: A dependência de energia suja (Opção C) é um risco de mercado crescente devido a impostos sobre carbono e a instabilidade geopolítica."
-                    }
-                ]
-            },
-            {
-                tema: "5. Comunidade Local (Pessoas/Lucro)",
-                pergunta: "A comunidade local (vizinha à fábrica) pede financiamento para construir uma creche. Investir o valor desviaria 5% do orçamento de Marketing.",
-                opcoes: [
-                    {
-                        texto: "Opção A (RSAC Positiva): Financiar a creche como um Investimento Social estratégico.",
-                        impacto: { planeta: 0, pessoas: 15, lucro: -12 }, 
-                        fato: "FATO RSAC: <span class='bold'>Investimento Social Estratégico</span> (Opção A) aumenta a 'Licença Social para Operar', gera boa vontade e reputação, o que indiretamente impulsiona o Lucro futuro."
-                    },
-                    {
-                        texto: "Opção B (Misto): Fazer uma pequena doação pontual (Filantropia) para ajudar.",
-                        impacto: { planeta: 0, pessoas: 5, lucro: -5 }, 
-                        fato: "FATO RSAC: Filantropia (Opção B) resolve um problema imediato, mas não cria valor mútuo de longo prazo entre a empresa e a comunidade."
-                    },
-                    {
-                        texto: "Opção C (RSAC Negativa): Negar e focar todo o orçamento no Marketing tradicional.",
-                        impacto: { planeta: 0, pessoas: -15, lucro: 10 }, 
-                        fato: "FATO RSAC: Ignorar o clamor comunitário (Opção C) afeta a reputação, aumenta o risco de protestos e pode gerar atrito com autoridades locais."
-                    }
-                ]
-            },
-            {
-                tema: "6. Diversidade e Inclusão (Pessoas)",
-                pergunta: "Para aumentar a diversidade, você deve implementar um programa de mentoria e cotas, mas a área de RH avisa que o processo de contratação será mais lento e custoso.",
-                opcoes: [
-                    {
-                        texto: "Opção A (RSAC Positiva): Implementar o programa completo, absorvendo o custo (Pessoas e ESG).",
-                        impacto: { planeta: 0, pessoas: 15, lucro: -10 }, 
-                        fato: "FATO RSAC: A <span class='bold'>Diversidade e Inclusão</span> (Opção A) comprovadamente aumentam a inovação e o desempenho financeiro no longo prazo, apesar do custo inicial de implementação."
-                    },
-                    {
-                        texto: "Opção B (Misto): Adotar apenas medidas de conscientização online (custo baixo).",
-                        impacto: { planeta: 0, pessoas: 5, lucro: -2 }, 
-                        fato: "FATO RSAC: Conscientização é o primeiro passo, mas sem ação concreta (Opção B), a iniciativa pode ser vista como 'Socialwashing' superficial."
-                    },
-                    {
-                        texto: "Opção C (RSAC Negativa): Manter o foco apenas no 'mérito' sem programas específicos de inclusão.",
-                        impacto: { planeta: 0, pessoas: -10, lucro: 5 }, 
-                        fato: "FATO RSAC: O foco exclusivo no 'mérito' (Opção C) perpetua a falta de diversidade, excluindo talentos e limitando a perspectiva do negócio."
-                    }
-                ]
-            },
-            {
-                tema: "7. Lobby e Legislação (Governança/Planeta)",
-                pergunta: "Um projeto de lei que limita severamente a poluição está em votação. Você pode financiar um lobby para atrasar a lei ou apoiar a legislação publicamente.",
-                opcoes: [
-                    {
-                        texto: "Opção A (RSAC Positiva): Apoiar a Lei e adequar a empresa (RSAC).",
-                        impacto: { planeta: 15, pessoas: 5, lucro: -15 }, 
-                        fato: "FATO RSAC: Apoiar a legislação (Opção A) cria um campo de atuação justo, evita multas futuras e fortalece a reputação corporativa."
-                    },
-                    {
-                        texto: "Opção B (Misto): Financiar um lobby discreto para diluir a lei, mas sem ilegalidades.",
-                        impacto: { planeta: -5, pessoas: 0, lucro: 5 }, 
-                        fato: "FATO RSAC: O lobby ético (Opção B) pode ser legal, mas é visto com desconfiança e coloca os interesses privados acima dos ambientais."
-                    },
-                    {
-                        texto: "Opção C (RSAC Negativa): Financiar um lobby agressivo e ilegal para derrubar a lei.",
-                        impacto: { planeta: -25, pessoas: -15, lucro: 15 }, 
-                        fato: "FATO RSAC: O lobby ilegal (Opção C) é um risco catastrófico de Governança. Se descoberto, resulta em escândalo, multas e processos criminais."
-                    }
-                ]
-            },
-            {
-                tema: "8. Marketing Ético (Planeta/Pessoas)",
-                pergunta: "A equipe de marketing quer lançar uma campanha 'verde' baseada em uma única ação ambiental pequena, gastando metade do seu lucro anual.",
-                opcoes: [
-                    {
-                        texto: "Opção A (RSAC Positiva): Bloquear a campanha e investir em ações ambientais substanciais primeiro.",
-                        impacto: { planeta: 10, pessoas: 5, lucro: -15 }, 
-                        fato: "FATO RSAC: Ação real é mais importante que propaganda. A Opção A evita o <span class='bold'>Greenwashing</span> e constrói valor genuíno para o Planeta e a reputação (Pessoas)."
-                    },
-                    {
-                        texto: "Opção B (Misto): Lançar a campanha 'verde' mesmo com dados fracos (Greenwashing).",
-                        impacto: { planeta: -5, pessoas: -10, lucro: 10 }, 
-                        fato: "FATO RSAC: <span class='bold'>Greenwashing</span> (Opção B) pode levar a processos legais por propaganda enganosa e destruição da confiança do consumidor (Pessoas) se for desmascarado."
-                    },
-                    {
-                        texto: "Opção C (Alternativa Sustentável): Mudar o orçamento da campanha para um projeto social tangível e mensurável (ODS).",
-                        impacto: { planeta: 5, pessoas: 10, lucro: -10 }, 
-                        fato: "FATO RSAC: O foco em projetos sociais (Opção C) alinhados aos ODS gera impacto positivo mensurável e é uma estratégia de RSAC mais segura do que o Greenwashing."
-                    }
-                ]
-            },
-            {
-                tema: "9. Crise e Transparência (Governança/Pessoas)",
-                pergunta: "Um erro na linha de produção causou um pequeno vazamento de produto. Se revelado, pode assustar investidores. Compliance exige transparência total.",
-                opcoes: [
-                    {
-                        texto: "Opção A (RSAC Positiva): Revelar o erro imediatamente, assumir a culpa e apresentar um plano de correção.",
-                        impacto: { planeta: 0, pessoas: 15, lucro: -12 }, 
-                        fato: "FATO RSAC: A <span class='bold'>Transparência</span> (Opção A) é o pilar da Governança. Embora possa haver queda de Lucro imediata, a credibilidade (Pessoas) se fortalece e atrai investidores éticos."
-                    },
-                    {
-                        texto: "Opção B (Misto): Tentar corrigir o vazamento internamente e ocultar a informação, sem quebrar nenhuma lei.",
-                        impacto: { planeta: 0, pessoas: 0, lucro: 5 }, 
-                        fato: "FATO RSAC: Ocultar informações (Opção B) viola o espírito da Governança. O risco de ser descoberto é alto e o dano à reputação seria irreparável."
-                    },
-                    {
-                        texto: "Opção C (RSAC Negativa): Culpar um fornecedor externo e reter a informação.",
-                        impacto: { planeta: 0, pessoas: -15, lucro: -15 }, 
-                        fato: "FATO RSAC: Mentir (Opção C) e culpar terceiros destrói a Governança e a Reputação. Além do dano imediato, pode levar a processos de difamação."
-                    }
-                ]
-            },
-            {
-                tema: "10. O Legado Final (Lucro/Geral)",
-                pergunta: "O lucro acumulado pode ser distribuído como um dividendo recorde ou reinvestido em um fundo de sustentabilidade de longo prazo para seu legado.",
-                opcoes: [
-                    {
-                        texto: "Opção A (RSAC Positiva): Reinvestir em um Fundo de Sustentabilidade (Legado ESG).",
-                        impacto: { planeta: 10, pessoas: 10, lucro: -20 }, 
-                        fato: "FATO RSAC: O <span class='bold'>Capital de Sustentabilidade</span> (Opção A) é o reinvestimento do lucro na resiliência futura da empresa, garantindo prosperidade para as próximas gerações."
-                    },
-                    {
-                        texto: "Opção B (Misto): Dividendo moderado e pequenas doações (Filantropia).",
-                        impacto: { planeta: 5, pessoas: 5, lucro: -10 }, 
-                        fato: "FATO RSAC: É uma solução de compromisso (Opção B), mas sacrifica um grande impacto de longo prazo por satisfação imediata de stakeholders."
-                    },
-                    {
-                        texto: "Opção C (RSAC Negativa): Dividendo Máximo, apenas para acionistas.",
-                        impacto: { planeta: -5, pessoas: -5, lucro: 20 }, 
-                        fato: "FATO RSAC: O foco exclusivo no lucro (Opção C) ignora os riscos ambientais e sociais (falta de investimento em infraestrutura), tornando a empresa insustentável a longo prazo."
-                    }
-                ]
-            }
-        ];
-
-        // Estado do Jogo
-        let status = {
-            // AS PORCENTAGENS INICIAM EM 100% AQUI
-            planeta: 100,
-            pessoas: 100,
-            lucro: 100,
-            turno: 1,
-            vitoria: 10,
-            minimoParaVencer: 75,
-            gameActive: false
-        };
-
-        // VARIÁVEIS PARA LÓGICA DE PERGUNTAS SEQUENCIAIS E NÃO-REPETITIVAS
-        let DILEMAS_ORDENADOS = []; 
-        let INDICE_ATUAL_DILEMA = 0; 
-        
-        // Referências aos Elementos da Interface
-        const elements = {
-            planetaBar: document.getElementById('planeta-bar'),
-            pessoasBar: document.getElementById('pessoas-bar'),
-            lucroBar: document.getElementById('lucro-bar'),
-            planetaValue: document.getElementById('planeta-value'),
-            pessoasValue: document.getElementById('pessoas-value'),
-            lucroValue: document.getElementById('lucro-value'),
-            turnInfo: document.getElementById('turn-info'),
-            cardContainer: document.getElementById('card-container'),
-            feedbackDiv: document.getElementById('feedback'),
-            gameOverScreen: document.getElementById('game-over-screen'),
-            winScreen: document.getElementById('win-screen'),
-            gameArea: document.getElementById('game-area')
-        };
-        
-        // --- Função para embaralhar um array (Algoritmo Fisher-Yates) ---
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-        }
-
-        // --- Funções de Lógica do Jogo ---
-
-        function updateUI() {
-            ['planeta', 'pessoas', 'lucro'].forEach(key => {
-                const value = Math.max(0, Math.min(100, status[key]));
-                const barElement = elements[`${key}Bar`];
-                const valueElement = elements[`${key}Value`];
-                
-                barElement.style.width = `${value}%`;
-                valueElement.textContent = `${value.toFixed(0)}%`;
-
-                const barContainer = barElement.parentElement.parentElement;
-                if (value < 25) {
-                    barElement.classList.add(`low-${key}`);
-                    barContainer.style.borderColor = '#e74c3c';
-                } else {
-                    barElement.classList.remove(`low-${key}`);
-                    barContainer.style.borderColor = '';
+<script>
+    // Definição dos Dilemas de RSAC (seu DILEMAS original)
+    const DILEMAS = [
+        // ... (Seus 10 dilemas originais aqui) ...
+        {
+            tema: "1. Resíduos e Custos (Planeta/Lucro)",
+            pergunta: "Sua empresa precisa reduzir custos para manter a competitividade. Qual decisão você toma em relação ao descarte de resíduos industriais?",
+            opcoes: [
+                {
+                    texto: "Opção A (RSAC Positiva): Investir em Economia Circular (reciclagem e separação), absorvendo o custo inicial.",
+                    impacto: { planeta: 15, pessoas: 5, lucro: -12 }, 
+                    fato: "FATO RSAC: <span class='bold'>Economia Circular</span> (Opção A) é o melhor a longo prazo, mas exige investimento inicial. O custo de descarte irregular (Opção C) sempre volta como multa ou crise de reputação."
+                },
+                {
+                    texto: "Opção B (Neutro): Manter o descarte atual em aterro sanitário.",
+                    impacto: { planeta: -5, pessoas: 0, lucro: 5 },
+                    fato: "FATO RSAC: Aterros são uma solução temporária e não sustentável. Não resolve o problema e pode gerar custos futuros com taxas ambientais."
+                },
+                {
+                    texto: "Opção C (RSAC Negativa): Usar um serviço de descarte irregular, porém mais barato, para cortar custos.",
+                    impacto: { planeta: -20, pessoas: -10, lucro: 15 },
+                    fato: "FATO RSAC: Descarte irregular é crime ambiental, destrói o pilar Planeta e, se descoberto, causa falência e prisão."
                 }
-            });
+            ]
+        },
+        // ... (resto dos dilemas) ...
+    ]; // Fechamento do Array DILEMAS
 
-            elements.turnInfo.textContent = `Turno ${status.turno} / ${status.vitoria}`;
+    // Estado do Jogo
+    let status = {
+        planeta: 100,
+        pessoas: 100,
+        lucro: 100,
+        turno: 1,
+        vitoria: 10,
+        minimoParaVencer: 75,
+        gameActive: false
+    };
+
+    // Variáveis de Lógica
+    let DILEMAS_ORDENADOS = []; 
+    let INDICE_ATUAL_DILEMA = 0; 
+    
+    // Referências aos Elementos da Interface
+    const elements = {
+        planetaBar: document.getElementById('planeta-bar'),
+        pessoasBar: document.getElementById('pessoas-bar'),
+        lucroBar: document.getElementById('lucro-bar'),
+        planetaValue: document.getElementById('planeta-value'),
+        pessoasValue: document.getElementById('pessoas-value'),
+        lucroValue: document.getElementById('lucro-value'),
+        turnInfo: document.getElementById('turn-info'),
+        cardContainer: document.getElementById('card-container'),
+        feedbackDiv: document.getElementById('feedback'),
+        gameOverScreen: document.getElementById('game-over-screen'),
+        winScreen: document.getElementById('win-screen'),
+        gameArea: document.getElementById('game-area')
+    };
+    
+    // --- Função para embaralhar um array (Algoritmo Fisher-Yates) ---
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    // Definição de Eventos Aleatórios (Feedback da Comunidade)
+    const EVENTOS_ALEATORIOS = {
+        planetaBaixo: [
+            { texto: "🚨 <span class='bold'>EVENTO: Crise Ambiental!</span> Notícias sobre poluição hídrica na área da fábrica. A reputação cai e há custos de remediação. (-10 Lucro, -10 Pessoas).", impacto: { lucro: -10, pessoas: -10, planeta: 0 } },
+            { texto: "⚠️ <span class='bold'>EVENTO: Multa Ambiental Pesada!</span> O governo impõe uma multa por má gestão de resíduos. (-15 Lucro).", impacto: { lucro: -15, pessoas: 0, planeta: 0 } },
+        ],
+        pessoasBaixo: [
+            { texto: "📢 <span class='bold'>EVENTO: Greve Geral!</span> Funcionários param a produção devido às más condições de trabalho. (-15 Lucro, -5 Pessoas).", impacto: { lucro: -15, pessoas: -5, planeta: 0 } },
+            { texto: "😠 <span class='bold'>EVENTO: Protesto da Comunidade!</span> Moradores protestam contra a empresa. A reputação e confiança caem. (-15 Pessoas).", impacto: { lucro: 0, pessoas: -15, planeta: 0 } },
+        ],
+        lucroBaixo: [
+            { texto: "📉 <span class='bold'>EVENTO: Queda no Investimento!</span> Acionistas preocupados com a transparência e desempenho reduzem o capital investido. (-10 Lucro).", impacto: { lucro: -10, pessoas: 0, planeta: 0 } },
+            { texto: "❌ <span class='bold'>EVENTO: Dificuldade de Empréstimo!</span> Bancos negam crédito devido ao baixo desempenho financeiro. (-5 Lucro).", impacto: { lucro: -5, pessoas: 0, planeta: 0 } },
+        ],
+        todosAltos: [
+            { texto: "🏆 <span class='bold'>EVENTO: Prêmio de Sustentabilidade!</span> Cobertura de mídia positiva e bônus nas vendas. (+10 Lucro, +5 Pessoas, +5 Planeta).", impacto: { lucro: 10, pessoas: 5, planeta: 5 } },
+            { texto: "🤝 <span class='bold'>EVENTO: Lealdade do Consumidor!</span> Consumidores preferem marcas éticas, gerando aumento de vendas. (+10 Lucro, +10 Pessoas).", impacto: { lucro: 10, pessoas: 10, planeta: 0 } },
+        ],
+    };
+
+    // --- Funções de Lógica do Jogo (continuando) ---
+
+    function updateUI() {
+        // [CÓDIGO DA FUNÇÃO updateUI ORIGINAL]
+        ['planeta', 'pessoas', 'lucro'].forEach(key => {
+            const value = Math.max(0, Math.min(100, status[key]));
+            const barElement = elements[`${key}Bar`];
+            const valueElement = elements[`${key}Value`];
+            
+            barElement.style.width = `${value}%`;
+            valueElement.textContent = `${value.toFixed(0)}%`;
+
+            const barContainer = barElement.parentElement.parentElement;
+            if (value < 25) {
+                barElement.classList.add(`low-${key}`);
+                barContainer.style.borderColor = '#e74c3c';
+            } else {
+                barElement.classList.remove(`low-${key}`);
+                barContainer.style.borderColor = '';
+            }
+        });
+
+        elements.turnInfo.textContent = `Turno ${status.turno} / ${status.vitoria}`;
+    }
+
+    function clamp(value) {
+        return Math.max(0, Math.min(100, value));
+    }
+
+    function applyImpact(impact) {
+        status.planeta = clamp(status.planeta + (impact.planeta || 0));
+        status.pessoas = clamp(status.pessoas + (impact.pessoas || 0));
+        status.lucro = clamp(status.lucro + (impact.lucro || 0));
+    }
+    
+    function checkGameOver() {
+        // [CÓDIGO DA FUNÇÃO checkGameOver ORIGINAL]
+        if (status.planeta <= status.minimoParaVencer || status.pessoas <= status.minimoParaVencer || status.lucro <= status.minimoParaVencer) {
+            status.gameActive = false;
+            elements.cardContainer.style.display = 'none';
+            elements.feedbackDiv.style.display = 'none';
+
+            let msg = `<h2>😭 Fim de Jogo!</h2>`;
+            if (status.planeta <= status.minimoParaVencer) {
+                msg += `<p>O pilar <span class='bold'>PLANETA (${status.planeta}%)</span> caiu abaixo do mínimo (${status.minimoParaVencer}%). Sua empresa foi multada e fechada.</p>`;
+            } else if (status.pessoas <= status.minimoParaVencer) {
+                msg += `<p>O pilar <span class='bold'>PESSOAS (${status.pessoas}%)</span> caiu abaixo do mínimo (${status.minimoParaVencer}%). Crises sociais e greves inviabilizaram a operação.</p>`;
+            } else if (status.lucro <= status.minimoParaVencer) {
+                msg += `<p>O pilar <span class='bold'>LUCRO (${status.lucro}%)</span> caiu abaixo do mínimo (${status.minimoParaVencer}%). A empresa faliu devido a altos custos ou baixo retorno.</p>`;
+            }
+            msg += `<button onclick="window.location.reload()" class="next-turn-button" style="background-color: #c0392b;">Recomeçar Jogo</button>`;
+            elements.gameOverScreen.innerHTML = msg;
+            elements.gameOverScreen.style.display = 'block';
+            return true;
         }
 
-        function clamp(value) {
-            return Math.max(0, Math.min(100, value));
+        if (status.turno > status.vitoria) {
+            status.gameActive = false;
+            elements.cardContainer.style.display = 'none';
+            elements.feedbackDiv.style.display = 'none';
+            
+            let msg = `<h2>🎉 Vitória! Parabéns!</h2>`;
+            msg += `<p>Você sobreviveu por ${status.vitoria} turnos e manteve o <span class='bold'>Triple Bottom Line</span> acima de ${status.minimoParaVencer}%. Seu legado de sustentabilidade está garantido!</p>`;
+            msg += `<p>Planeta: ${status.planeta}%, Pessoas: ${status.pessoas}%, Lucro: ${status.lucro}%</p>`;
+            msg += `<button onclick="window.location.reload()" class="next-turn-button" style="background-color: #27ae60;">Jogar Novamente</button>`;
+            elements.winScreen.innerHTML = msg;
+            elements.winScreen.style.display = 'block';
+            return true;
         }
 
-        function applyImpact(impact) {
-            status.planeta = clamp(status.planeta + (impact.planeta || 0));
-            status.pessoas = clamp(status.pessoas + (impact.pessoas || 0));
-            status.lucro = clamp(status.lucro + (impact.lucro || 0));
+        return false;
+    }
+
+    function checkRandomEvent() {
+        // [CÓDIGO DA FUNÇÃO checkRandomEvent ORIGINAL]
+        const baixo = status.minimoParaVencer + 15; // Define o limiar para 'baixo' como 90% (75+15) para tornar o jogo mais desafiador.
+        const alto = status.minimoParaVencer + 20; // Define o limiar para 'alto' como 95% (75+20)
+
+        const isPlanetaLow = status.planeta < baixo;
+        const isPessoasLow = status.pessoas < baixo;
+        const isLucroLow = status.lucro < baixo;
+        const isAllHigh = status.planeta > alto && status.pessoas > alto && status.lucro > alto;
+
+        let eventMessage = "Tudo Calmo. Nenhum evento aleatório neste turno.";
+        let eventOccurred = false;
+
+        if (isAllHigh && Math.random() < 0.3) { // 30% de chance de evento positivo se todos estiverem altos
+            const event = EVENTOS_ALEATORIOS.todosAltos[Math.floor(Math.random() * EVENTOS_ALEATORIOS.todosAltos.length)];
+            applyImpact(event.impact);
+            eventMessage = event.texto;
+            eventOccurred = true;
+        } else if (isPlanetaLow && Math.random() < 0.5) { // 50% de chance de evento negativo se Planeta estiver baixo
+            const event = EVENTOS_ALEATORIOS.planetaBaixo[Math.floor(Math.random() * EVENTOS_ALEATORIOS.planetaBaixo.length)];
+            applyImpact(event.impact);
+            eventMessage = event.texto;
+            eventOccurred = true;
+        } else if (isPessoasLow && Math.random() < 0.5) { // 50% de chance de evento negativo se Pessoas estiver baixo
+            const event = EVENTOS_ALEATORIOS.pessoasBaixo[Math.floor(Math.random() * EVENTOS_ALEATORIOS.pessoasBaixo.length)];
+            applyImpact(event.impact);
+            eventMessage = event.texto;
+            eventOccurred = true;
+        } else if (isLucroLow && Math.random() < 0.5) { // 50% de chance de evento negativo se Lucro estiver baixo
+            const event = EVENTOS_ALEATORIOS.lucroBaixo[Math.floor(Math.random() * EVENTOS_ALEATORIOS.lucroBaixo.length)];
+            applyImpact(event.impact);
+            eventMessage = event.texto;
+            eventOccurred = true;
         }
 
-        // Definição de Eventos Aleatórios (Feedback da Comunidade)
-        const EVENTOS_ALEATORIOS = {
-            planetaBaixo: [
-                { texto: "🚨 <span class='bold'>EVENTO: Crise Ambiental!</span> Notícias sobre poluição hídrica na área da fábrica. A reputação cai e há custos de remediação. (-10 Lucro, -10 Pessoas).", impacto: { lucro: -10, pessoas: -10, planeta: 0 } },
-                { texto: "⚠️ <span class='bold'>EVENTO: Multa Ambiental Pesada!</span> O governo impõe uma multa por má gestão de resíduos. (-15 Lucro).", impacto: { lucro: -15, pessoas: 0, planeta: 0 } },
-            ],
-            pessoasBaixo: [
-                { texto: "📢 <span class='bold'>EVENTO: Greve Geral!</span> Funcionários param a produção devido às más condições de trabalho. (-15 Lucro, -5 Pessoas).", impacto: { lucro: -15, pessoas: -5, planeta: 0 } },
-                { texto: "😠 <span class='bold'>EVENTO: Protesto da Comunidade!</span> Moradores protestam contra a empresa. A reputação e confiança caem. (-15 Pessoas).", impacto: { lucro: 0, pessoas: -15, planeta: 0 } },
-            ],
-            lucroBaixo: [
-                { texto: "📉 <span class='bold'>EVENTO: Queda no Investimento!</span> Acionistas preocupados com a transparência e desempenho reduzem o capital investido. (-10 Lucro).", impacto: { lucro: -10, pessoas: 0, planeta: 0 } },
-                { texto: "❌ <span class='bold'>EVENTO: Dificuldade de Empréstimo!</span> Bancos negam crédito devido ao baixo desempenho financeiro. (-5 Lucro).", impacto: { lucro: -5, pessoas: 0, planeta: 0 } },
-            ],
-            todosAltos: [
-                { texto: "🏆 <span class='bold'>EVENTO: Prêmio de Sustentabilidade!</span> Cobertura de mídia positiva e bônus nas vendas. (+10 Lucro, +5 Pessoas, +5 Planeta).", impacto: { lucro: 10, pessoas: 5, planeta: 5 } },
-                { texto: "🤝 <span class='bold'>EVENTO: Lealdade do Consumidor!</span> A reputação exemplar impulsiona as vendas e o Lucro. (+15 Lucro).", impacto: { lucro: 15, pessoas:
+        elements.feedbackDiv.innerHTML = `<p><span class="bold">Feedback da Comunidade/Eventos:</span> ${eventMessage}</p>`;
+        elements.feedbackDiv.style.display =
