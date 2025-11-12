@@ -100,11 +100,12 @@
             height: 100%;
             transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out;
         }
+        /* Cores base */
         .planeta .bar { background-color: #2ecc71; }
         .pessoas .bar { background-color: #3498db; }
         .lucro .bar { background-color: #f39c12; }
 
-        /* Cores de status */
+        /* Cores de status (Sobrescrevem as cores base se aplicadas) */
         .low-status { background-color: #e74c3c !important; }
         .mid-status { background-color: #f1c40f !important; }
         
@@ -505,6 +506,56 @@
         // FUNÇÕES DE UTILIDADE E LÓGICA DO JOGO
 
         /**
+         * Verifica se as condições de Game Over foram atingidas.
+         */
+        function checkGameOver() {
+            if (gameState.planeta <= 0 || gameState.pessoas <= 0 || gameState.lucro <= 0) {
+                showGameOverScreen();
+            }
+        }
+
+        /**
+         * Exibe a tela de Game Over.
+         */
+        function showGameOverScreen() {
+            cardContainerEl.style.display = 'none';
+            feedbackEl.style.display = 'none';
+            winScreenEl.style.display = 'none';
+
+            let reason = '';
+            if (gameState.planeta <= 0) reason = 'Você destruiu o Planeta (ambiental)!';
+            else if (gameState.pessoas <= 0) reason = 'Você destruiu o pilar Pessoas (social)!';
+            else if (gameState.lucro <= 0) reason = 'Você destruiu o pilar Lucro (econômico)!';
+
+            gameOverScreenEl.innerHTML = `
+                <h2>GAME OVER! &#x26A0;&#xFE0F;</h2>
+                <p>O Triple Bottom Line não foi sustentado. ${reason}</p>
+                <p>Você sobreviveu por ${gameState.currentTurn - 1} de ${gameState.totalTurns} turnos.</p>
+                <button onclick="startGame()" class="next-turn-button" style="background-color: #34495e; box-shadow: 0 4px #2c3e50;">Tentar Novamente</button>
+            `;
+            gameOverScreenEl.style.display = 'block';
+        }
+
+        /**
+         * Exibe a tela de vitória.
+         * @param {string} customMessage Mensagem personalizada de vitória.
+         */
+        function showWinScreen(customMessage = "Parabéns, você é um Gestor de Sustentabilidade de Elite!") {
+            cardContainerEl.style.display = 'none';
+            feedbackEl.style.display = 'none';
+            gameOverScreenEl.style.display = 'none';
+            
+            winScreenEl.innerHTML = `
+                <h2>VITÓRIA! &#x1F3C6;</h2>
+                <p>${customMessage}</p>
+                <p>Você completou ${gameState.totalTurns} turnos mantendo os pilares do Triple Bottom Line acima do limite crítico.</p>
+                <button onclick="startGame()" class="next-turn-button" style="background-color: #1abc9c; box-shadow: 0 4px #16a085;">Jogar de Novo</button>
+            `;
+            winScreenEl.style.display = 'block';
+        }
+
+
+        /**
          * Atualiza visualmente as barras e os valores percentuais na interface.
          * Aplica cores de alerta se o valor estiver baixo.
          */
@@ -525,6 +576,7 @@
 
                 // Aplica cor de status e bordas de alerta
                 barEl.className = 'bar';
+                barEl.classList.add(key); // Adiciona a classe de cor base (planeta, pessoas, lucro)
                 indicatorEl.classList.remove('alert', 'warning');
 
                 if (safeValue <= 50) {
@@ -534,7 +586,7 @@
                     barEl.classList.add('mid-status');
                     indicatorEl.classList.add('warning'); // Amarelo
                 } else {
-                     barEl.classList.remove('low-status', 'mid-status');
+                    barEl.classList.remove('low-status', 'mid-status');
                 }
             });
             checkGameOver();
@@ -547,10 +599,10 @@
         function getNextDilemma() {
             if (dilemmasUsed.length >= DILEMAS.length) {
                 // Se todos foram usados, embaralha e reinicia (opcional, para jogos mais longos)
-                dilemmasUsed = []; 
+                dilemmasUsed = [];
             }
 
-            let availableIndices = DILEMAS.map((_, index) => index).filter(index => !dilemasUsed.includes(index));
+            let availableIndices = DILEMAS.map((_, index) => index).filter(index => !dilemmasUsed.includes(index));
             if (availableIndices.length === 0) return null;
 
             const randomIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
@@ -621,7 +673,7 @@
             `;
             
             dilemma.opcoes.forEach((opcao, index) => {
-                htmlContent += `<button class="option-button" onclick="handleChoice(${index})" ${currentDilemma ? '' : 'disabled'}>${opcao.texto}</button>`;
+                htmlContent += `<button class="option-button" onclick="handleChoice(${index})">${opcao.texto}</button>`;
             });
 
             cardContainerEl.innerHTML = htmlContent;
@@ -667,71 +719,17 @@
                 return `<span style="color:${color}; font-weight: bold;">${sign}${value}% em ${name}</span>`;
             };
 
-            feedbackEl.innerHTML = `
-                <p><strong>Impacto da Decisão:</strong> 
-                    ${getImpactText(impacto.planeta, 'Planeta')}, 
-                    ${getImpactText(impacto.pessoas, 'Pessoas')}, 
-                    ${getImpactText(impacto.lucro, 'Lucro')}.
-                </p>
+            const feedbackHTML = `
+                <p><strong>Impacto da Decisão:</strong></p>
+                <p>${getImpactText(impacto.planeta, 'Planeta')}, 
+                   ${getImpactText(impacto.pessoas, 'Pessoas')}, 
+                   ${getImpactText(impacto.lucro, 'Lucro')}</p>
                 <p class="educational-fact">${fato}</p>
             `;
+
+            feedbackEl.innerHTML = feedbackHTML;
             feedbackEl.style.display = 'block';
         }
-
-        /**
-         * Verifica se alguma condição de Game Over foi atingida.
-         */
-        function checkGameOver() {
-            const check = (value) => value > 0;
-            const isGameOver = !check(gameState.planeta) || !check(gameState.pessoas) || !check(gameState.lucro);
-
-            if (isGameOver) {
-                cardContainerEl.style.display = 'none';
-                feedbackEl.style.display = 'none';
-                turnInfoEl.textContent = `FIM DE JOGO (Turno ${gameState.currentTurn} / ${gameState.totalTurns})`;
-                
-                let reason = "Você esgotou os recursos da empresa.";
-                if (gameState.planeta <= 0) reason = "O pilar Planeta (Ambiental) falhou! A empresa causou um desastre ambiental e foi fechada.";
-                else if (gameState.pessoas <= 0) reason = "O pilar Pessoas (Social) falhou! Greves, processos e má reputação levaram à falência.";
-                else if (gameState.lucro <= 0) reason = "O pilar Lucro (Econômico) falhou! A insustentabilidade financeira levou ao colapso.";
-
-                gameOverScreenEl.innerHTML = `
-                    <h2>&#x1F6A8; GAME OVER &#x1F6A8;</h2>
-                    <p>O Triple Bottom Line (Trio P) falhou antes do Turno ${gameState.totalTurns}.</p>
-                    <p><strong>Motivo:</strong> ${reason}</p>
-                    <p>Tente novamente focando no equilíbrio dos três pilares!</p>
-                    <button onclick="startGame()" class="next-turn-button" style="background-color: #c0392b; box-shadow: 0 4px #a93226;">Tentar Novamente</button>
-                `;
-                gameOverScreenEl.style.display = 'block';
-            }
-        }
-
-        /**
-         * Exibe a tela de vitória.
-         */
-        function showWinScreen(message = "Parabéns! Você alcançou o equilíbrio do Triple Bottom Line!") {
-            cardContainerEl.style.display = 'none';
-            feedbackEl.style.display = 'none';
-            turnInfoEl.textContent = `Vitória Alcançada! (Turno ${gameState.totalTurns} / ${gameState.totalTurns})`;
-            
-            winScreenEl.innerHTML = `
-                <h2>&#x1F3C6; VITÓRIA SUSTENTÁVEL! &#x1F3C6;</h2>
-                <p>Você sobreviveu a ${gameState.totalTurns} turnos mantendo os pilares Planeta, Pessoas e Lucro acima de 75%.</p>
-                <p><strong>Resultado Final:</strong> Planeta: ${Math.round(gameState.planeta)}%, Pessoas: ${Math.round(gameState.pessoas)}%, Lucro: ${Math.round(gameState.lucro)}%</p>
-                <p>${message}</p>
-                <button onclick="startGame()" class="next-turn-button">Jogar Novamente</button>
-            `;
-            winScreenEl.style.display = 'block';
-        }
-
-        // Inicialização do Jogo
-        window.onload = function() {
-            // Inicializa as barras na tela inicial (100%)
-            updateBars(); 
-            console.log("Sistema RSAC pronto. Clique em Começar Jogo.");
-        };
-
     </script>
-
 </body>
 </html>
