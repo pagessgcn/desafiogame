@@ -11,35 +11,36 @@
             background-color: #f4f7f6;
             color: #333;
             margin: 0;
-            padding: 20px;
+            padding: 15px; /* Padding reduzido */
             display: flex;
             flex-direction: column;
             align-items: center;
+            font-size: 0.9em; /* Fonte base um pouco menor */
         }
 
-        /* ESTILO DO CABEÇALHO SUPERIOR (Conforme sua imagem e solicitação) */
+        /* ESTILO DO CABEÇALHO SUPERIOR (RSAC) */
         .header-rsac {
-            text-align: left; /* Alinhado à esquerda como na imagem */
-            margin-bottom: 25px;
-            padding: 15px 0;
+            text-align: left;
+            margin-bottom: 20px;
+            padding: 10px 0;
             width: 100%;
-            max-width: 900px; /* Alinha com a largura do container principal */
-            color: #494F79; /* Cor do texto similar à imagem */
+            max-width: 900px;
+            color: #494F79;
         }
         .header-rsac h1 {
-            color: #3C3E9D; /* Cor do título principal similar à imagem */
-            margin-bottom: 5px;
-            font-size: 2.5em; /* Tamanho maior para o título principal */
-            text-align: left; /* Alinhado à esquerda */
+            color: #3C3E9D;
+            margin-bottom: 3px;
+            font-size: 2em; /* Reduzido de 2.5em para 2em */
+            text-align: left;
         }
         .header-rsac p {
-            color: #666; /* Cor do texto do subtítulo similar à imagem */
-            font-size: 0.9em;
+            color: #666;
+            font-size: 0.8em; /* Reduzido de 0.9em para 0.8em */
             margin: 0;
-            text-align: left; /* Alinhado à esquerda */
+            text-align: left;
         }
         .header-rsac .bold {
-            font-weight: bold; /* Para o texto em negrito */
+            font-weight: bold;
         }
         /* FIM DO ESTILO DO CABEÇALHO */
 
@@ -47,48 +48,49 @@
             max-width: 900px;
             width: 100%;
             background: #fff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px; /* Padding reduzido */
+            border-radius: 10px; /* Borda reduzida */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
         
-        .container > h1 { /* Para o h1 DENTRO do container */
+        .container > h1 { /* Para o h1 DENTRO do container (Título do Jogo) */
             color: #2c3e50;
             text-align: center;
-            margin-bottom: 25px;
-            font-size: 2em; /* Tamanho do título do jogo */
+            margin-bottom: 20px;
+            font-size: 1.6em; /* Reduzido de 2em para 1.6em */
         }
         .container > p { /* Para o parágrafo do objetivo do jogo */
             text-align: center; 
-            margin-bottom: 25px; 
+            margin-bottom: 20px; 
             font-weight: 500;
+            font-size: 0.9em; /* Reduzido de 500 para 0.9em */
         }
 
         .indicators {
             display: flex;
             justify-content: space-around;
-            margin-bottom: 30px;
-            gap: 15px;
+            margin-bottom: 25px;
+            gap: 10px; /* Espaçamento reduzido */
         }
         .indicator-bar {
             width: 30%;
             text-align: center;
             background: #ecf0f1;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            padding: 10px; /* Padding reduzido */
+            border-radius: 6px; /* Borda reduzida */
+            font-size: 0.8em; /* Fonte interna da barra reduzida */
         }
         .indicator-bar h3 {
             margin-top: 0;
-            font-size: 1.1em;
+            font-size: 1em; /* Reduzido de 1.1em para 1em */
             display: flex;
             align-items: center;
             justify-content: center;
         }
         .bar-container {
-            height: 10px;
+            height: 8px; /* Altura da barra reduzida */
             background: #bdc3c7;
-            border-radius: 5px;
+            border-radius: 4px;
             overflow: hidden;
             margin-top: 5px;
         }
@@ -96,9 +98,9 @@
             height: 100%;
             transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out;
         }
-        .planeta .bar { background-color: #2ecc71; } /* Green */
-        .pessoas .bar { background-color: #3498db; } /* Blue */
-        .lucro .bar { background-color: #f39c12; } /* Orange */
+        .planeta .bar { background-color: #2ecc71; }
+        .pessoas .bar { background-color: #3498db; }
+        .lucro .bar { background-color: #f39c12; }
 
         /* Red for low status */
         .low-planeta { background-color: #e74c3c !important; }
@@ -107,36 +109,37 @@
 
         .game-area {
             border-top: 1px solid #ddd;
-            padding-top: 25px;
+            padding-top: 20px; /* Padding reduzido */
         }
         .turn-info {
             text-align: center;
-            font-size: 1.2em;
-            margin-bottom: 20px;
+            font-size: 1.1em; /* Reduzido de 1.2em para 1.1em */
+            margin-bottom: 15px; /* Margem reduzida */
             font-weight: bold;
         }
         .card-container {
             border: 2px solid #34495e;
-            border-radius: 10px;
-            padding: 20px;
+            border-radius: 8px; /* Borda reduzida */
+            padding: 15px; /* Padding reduzido */
             background: #fdfdfd;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            font-size: 0.9em; /* Fonte base do card reduzida */
         }
         .card-container h2 {
             margin-top: 0;
             color: #34495e;
+            font-size: 1.3em; /* Reduzido de 1.5em para 1.3em (título do dilema) */
         }
         .option-button {
             display: block;
             width: 100%;
-            padding: 15px;
-            margin: 10px 0;
+            padding: 10px; /* Padding reduzido */
+            margin: 8px 0; /* Margem reduzida */
             background-color: #3498db;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 1em;
+            font-size: 0.9em; /* Fonte do botão reduzida */
             transition: background-color 0.3s;
             text-align: left;
         }
@@ -144,44 +147,46 @@
             background-color: #2980b9;
         }
         .feedback {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 5px;
+            margin-top: 15px; /* Margem reduzida */
+            padding: 12px; /* Padding reduzido */
+            border-radius: 4px;
             background-color: #ecf0f1;
-            border-left: 5px solid #3498db;
+            border-left: 4px solid #3498db; /* Borda reduzida */
+            font-size: 0.85em; /* Fonte do feedback reduzida */
         }
         .feedback p {
-            margin: 5px 0;
+            margin: 4px 0; /* Margem reduzida */
         }
         .educational-fact {
             font-style: italic;
             color: #2c3e50;
-            margin-top: 10px;
+            margin-top: 8px; /* Margem reduzida */
             border-top: 1px dashed #ccc;
-            padding-top: 10px;
+            padding-top: 8px; /* Padding reduzido */
         }
         .game-over-screen, .win-screen {
             text-align: center;
-            padding: 50px;
+            padding: 30px; /* Padding reduzido */
             background: #e74c3c;
             color: white;
-            border-radius: 10px;
-            margin-top: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 1.1em; /* Fonte reduzida */
         }
         .win-screen {
             background: #27ae60;
         }
         .next-turn-button {
             display: block;
-            width: 50%;
-            margin: 20px auto;
-            padding: 15px;
+            width: 60%; /* Largura ligeiramente aumentada para compensar fonte menor */
+            margin: 15px auto; /* Margem reduzida */
+            padding: 12px; /* Padding reduzido */
             background-color: #27ae60;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 1.1em;
+            font-size: 1em; /* Fonte reduzida */
             transition: background-color 0.3s;
         }
         .next-turn-button:hover {
@@ -190,6 +195,7 @@
     </style>
 </head>
 <body>
+    
     <div class="header-rsac">
         <h1>RSAC: Responsabilidade Social Ambiental Corporativa</h1>
         <p>Desenvolvido por <span class="bold">S. Silva</span> e Monitorado: <span class="bold">Renata Lange Silva</span>, <span class="bold">Francyne Penteado Colombo</span> e <span class="bold">Isabella Fiorini Ferraz</span></p>
@@ -197,7 +203,7 @@
     
     <div class="container">
         <h1>🎮 Desafio Triplo: Sustentabilidade e Negócios 💰🌍👥</h1>
-        <p style="text-align: center; margin-bottom: 25px; font-weight: 500;">
+        <p style="text-align: center; margin-bottom: 20px; font-weight: 500;">
             Assuma o papel de Gestor de Sustentabilidade. Seu objetivo é sobreviver por <span class="bold">10 Turnos</span> mantendo as três barras do <span class="bold">Triple Bottom Line (Pessoas, Planeta, Lucro)</span> acima de <span class="bold">75%</span>.
         </p>
 
@@ -464,8 +470,8 @@
         };
 
         // VARIÁVEIS PARA LÓGICA DE PERGUNTAS SEQUENCIAIS E NÃO-REPETITIVAS
-        let DILEMAS_ORDENADOS = []; // Array de índices de dilemas (ex: [3, 1, 4, 0, 2, 3, 1...])
-        let INDICE_ATUAL_DILEMA = 0; // Posição atual no array ordenado
+        let DILEMAS_ORDENADOS = []; 
+        let INDICE_ATUAL_DILEMA = 0; 
         
         // Referências aos Elementos da Interface
         const elements = {
@@ -541,4 +547,4 @@
             ],
             todosAltos: [
                 { texto: "🏆 <span class='bold'>EVENTO: Prêmio de Sustentabilidade!</span> Cobertura de mídia positiva e bônus nas vendas. (+10 Lucro, +5 Pessoas, +5 Planeta).", impacto: { lucro: 10, pessoas: 5, planeta: 5 } },
-                { texto: "🤝 <span class='bold'>EVENTO: Lealdade do Consumidor!</span> A reputação exemplar impulsiona as vendas e o Lucro. (+15 Lucro).", impacto: { lucro: 15, pessoas:
+                { texto: "🤝 <span class='bold'>EVENTO: Lealdade do Consumidor!</spa
