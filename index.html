@@ -164,18 +164,18 @@
         <div class="indicators">
             <div class="indicator-bar planeta">
                 <h3>🟢 Planeta (Ambiental)</h3>
-                <div class="bar-container"><div id="planeta-bar" class="bar" style="width: 50%;"></div></div>
-                <p id="planeta-value">50%</p>
+                <div class="bar-container"><div id="planeta-bar" class="bar" style="width: 100%;"></div></div>
+                <p id="planeta-value">100%</p>
             </div>
             <div class="indicator-bar pessoas">
                 <h3>🔵 Pessoas (Social)</h3>
-                <div class="bar-container"><div id="pessoas-bar" class="bar" style="width: 50%;"></div></div>
-                <p id="pessoas-value">50%</p>
+                <div class="bar-container"><div id="pessoas-bar" class="bar" style="width: 100%;"></div></div>
+                <p id="pessoas-value">100%</p>
             </div>
             <div class="indicator-bar lucro">
                 <h3>💰 Lucro (Econômico/Governança)</h3>
-                <div class="bar-container"><div id="lucro-bar" class="bar" style="width: 50%;"></div></div>
-                <p id="lucro-value">50%</p>
+                <div class="bar-container"><div id="lucro-bar" class="bar" style="width: 100%;"></div></div>
+                <p id="lucro-value">100%</p>
             </div>
         </div>
         
@@ -413,9 +413,10 @@
 
         // Estado do Jogo
         let status = {
-            planeta: 50,
-            pessoas: 50,
-            lucro: 50,
+            // AS PORCENTAGENS INICIAM EM 100% AQUI
+            planeta: 100,
+            pessoas: 100,
+            lucro: 100,
             turno: 1,
             vitoria: 10,
             minimoParaVencer: 75,
@@ -676,9 +677,10 @@
 
         function startGame() {
             status.gameActive = true;
-            status.planeta = 50;
-            status.pessoas = 50;
-            status.lucro = 50;
+            // ATUALIZAÇÃO: Inicia em 100%
+            status.planeta = 100;
+            status.pessoas = 100;
+            status.lucro = 100;
             status.turno = 1;
             elements.gameOverScreen.style.display = 'none';
             elements.winScreen.style.display = 'none';
